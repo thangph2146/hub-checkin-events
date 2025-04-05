@@ -3,7 +3,7 @@
 import { useTables } from '@/hooks/useTables'
 import { Table, Column } from '@/services/tables.service'
 import { useState } from 'react'
-import { Search, Users, Clock, Filter, SortAsc, SortDesc, ChevronDown, ChevronUp, Eye } from 'lucide-react'
+import { Search, Users, Clock, ChevronDown, ChevronUp, Eye } from 'lucide-react'
 import LoadingFallback from './LoadingFallback'
 import ErrorFallback from './ErrorFallback'
 
@@ -23,7 +23,6 @@ export default function TableList({ onTableSelect }: TableListProps): JSX.Elemen
     .filter(table => 
       table.table_name.toLowerCase().includes(searchTerm.toLowerCase())
     )
-
 
   const toggleTableExpand = (tableName: string, event: React.MouseEvent) => {
     event.stopPropagation();
