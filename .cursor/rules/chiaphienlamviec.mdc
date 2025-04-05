@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: true
+alwaysApply: false
 ---
 # Hướng Dẫn Chia Phiên Làm Việc Trong Cursor
 

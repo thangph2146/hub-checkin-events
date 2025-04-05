@@ -1,19 +1,13 @@
-'use client'
+import dynamic from 'next/dynamic';
+import LoadingFallback from './components/LoadingFallback';
 
-import { ErrorBoundary } from 'react-error-boundary'
-import { Suspense } from 'react'
-import TableList from './components/TableList'
-import LoadingFallback from './components/LoadingFallback'
-import ErrorFallback from './components/ErrorFallback'
-
-export default function Console(): JSX.Element {
-  return (
-    <div className="container mx-auto p-4">
-      <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <Suspense fallback={<LoadingFallback />}>
-          <TableList />
-        </Suspense>
-      </ErrorBoundary>
-    </div>
+const ConsoleClient = dynamic(() => import('./ConsoleClient'), {
+  loading: () => (
+    <LoadingFallback />
   )
+});
+
+
+export default function ConsolePage(): JSX.Element {
+  return <ConsoleClient />;
 } 
