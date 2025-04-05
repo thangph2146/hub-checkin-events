@@ -1,6 +1,6 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 
-const baseURL = process.env['NEXT_PUBLIC_API_URL'] || ''
+const baseURL = process.env['NEXT_PUBLIC_API_URL'] ?? ''
 
 export const axiosInstance = axios.create({
   baseURL,
@@ -20,25 +20,27 @@ axiosInstance.interceptors.request.use(
   }
 )
 
-// Add a response interceptor
+interface ErrorResponse {
+  message: string;
+  status: number;
+}
+
+// Add response interceptor
 axiosInstance.interceptors.response.use(
-  (response) => {
-    // Xử lý response data
-    return response
-  },
-  (error) => {
-    // Xử lý error response
+  (response) => response,
+  (error: AxiosError) => {
+    let errorMessage = 'Đã xảy ra lỗi'
+
     if (error.response) {
-      // Lỗi từ server với status code
-      console.error('Response Error:', error.response.data)
+      const response = error.response as { data?: ErrorResponse }
+      errorMessage = response.data?.message ?? 'Lỗi từ server'
     } else if (error.request) {
-      // Không nhận được response
-      console.error('Request Error:', error.request)
+      errorMessage = 'Không thể kết nối đến server'
     } else {
-      // Lỗi khi setup request
-      console.error('Error:', error.message)
+      errorMessage = error.message || 'Lỗi không xác định'
     }
-    return Promise.reject(error)
+
+    return Promise.reject(errorMessage)
   }
 )
 

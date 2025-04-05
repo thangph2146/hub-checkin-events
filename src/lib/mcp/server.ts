@@ -1,5 +1,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 // Tạo MCP server instance
 export const mcpServer = new McpServer({
@@ -100,14 +103,26 @@ async function exportSchema() {
   return {};
 }
 
-async function getTableDetails(tableName: string) {
-  // Implement table details retrieval
-  return { name: tableName };
+// Kiểm tra giá trị nullable string
+const validateString = (value: string | null | undefined): string => {
+  return value ?? ''
 }
 
-async function getSchemaInFormat(formatType: string) {
-  // Implement schema format conversion
-  return { format: formatType };
+// Trong các hàm, thay thế || bằng ??
+const getTableDetails = async (tableName: string) => {
+  const table = await prisma.$queryRaw`
+    SELECT * FROM information_schema.columns 
+    WHERE table_name = ${validateString(tableName)};
+  `
+  return table
+}
+
+const getSchemaInFormat = async (format: string) => {
+  const schema = await prisma.$queryRaw`
+    SELECT * FROM information_schema.tables 
+    WHERE table_schema = ${validateString(format)};
+  `
+  return schema
 }
 
 // Khởi động server với StdioServerTransport
