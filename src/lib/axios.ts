@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL || ''
+const baseURL = process.env['NEXT_PUBLIC_API_URL'] || ''
 
 export const axiosInstance = axios.create({
   baseURL,
@@ -40,4 +40,6 @@ axiosInstance.interceptors.response.use(
     }
     return Promise.reject(error)
   }
-) 
+)
+
+export default axiosInstance 
