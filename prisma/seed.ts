@@ -1,4 +1,4 @@
-import { PrismaClient, HinhThucSuKien, TrangThaiThamGia } from '@prisma/client'
+import { PrismaClient, HinhThucSuKien } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
@@ -21,7 +21,7 @@ async function main() {
   })
 
   // Tạo Users
-  const adminUser = await prisma.user.create({
+  const _adminUser = await prisma.user.create({
     data: {
       lastName: 'Admin',
       firstName: 'System',
