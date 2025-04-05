@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic'
 import type { ComponentType } from 'react'
 import type { DynamicOptions } from 'next/dynamic'
+import { ReactNode } from 'react'
 
 export const dynamicImport = <P extends Record<string, unknown>>(
   importFn: () => Promise<{ default: ComponentType<P> }>,
@@ -16,8 +17,9 @@ export const dynamicImport = <P extends Record<string, unknown>>(
 
 // Tạo các dynamic components
 export const DynamicComponents = {
-  Console: dynamicImport(() => import('@/app/console/page'), {
+  Console: dynamic(() => import('@/app/console/page'), {
     ssr: false,
+    loading: (): ReactNode => <div>Đang tải...</div>
   }),
   // Thêm các components khác ở đây
 }

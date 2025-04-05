@@ -1,0 +1,112 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Hướng Dẫn Chia Phiên Làm Việc Trong Cursor
+
+## Mục Đích
+- Tối ưu hóa việc sử dụng token trong các phiên làm việc
+- Tăng hiệu quả tương tác với AI
+- Giảm thiểu việc quá tải context
+
+## Nguyên Tắc Chia Phiên
+
+### 1. Chia Theo Chức Năng
+- Mỗi phiên làm việc tập trung vào một chức năng cụ thể
+- Không trộn lẫn nhiều tính năng khác nhau trong cùng một phiên
+- Ví dụ: 
+  ```
+  Phiên 1: Xây dựng UI components
+  Phiên 2: Implement business logic
+  Phiên 3: Testing và debugging
+  ```
+
+### 2. Chia Theo Thời Gian
+- Mỗi phiên không nên kéo dài quá 2 giờ
+- Nên tạo phiên mới khi:
+  - Chuyển sang task mới
+  - Sau khi nghỉ giải lao
+  - Khi context đã quá lớn
+
+### 3. Chia Theo Context
+- Giới hạn số lượng file trong một phiên
+- Tối đa 5-7 file liên quan trực tiếp
+- Reset phiên khi chuyển context hoàn toàn
+
+## Cách Thực Hiện
+
+### Bước 1: Lập Kế Hoạch
+```markdown
+- Liệt kê các task cần làm
+- Nhóm các task theo chức năng
+- Ước tính thời gian cho mỗi nhóm
+```
+
+### Bước 2: Khởi Tạo Phiên
+```markdown
+- Tạo phiên mới trong Cursor
+- Chỉ mở các file cần thiết
+- Set clear goal cho phiên
+```
+
+### Bước 3: Theo Dõi và Điều Chỉnh
+```markdown
+- Monitor token usage
+- Đánh giá hiệu quả tương tác
+- Reset khi cần thiết
+```
+
+## Best Practices
+
+### 1. Quản Lý File
+- Chỉ mở file cần thiết
+- Đóng file không liên quan
+- Giữ workspace gọn gàng
+
+### 2. Tương Tác với AI
+- Câu hỏi ngắn gọn, rõ ràng
+- Tập trung vào một vấn đề
+- Tránh yêu cầu quá phức tạp
+
+### 3. Reset Phiên
+Nên reset phiên khi:
+- Token usage cao
+- Context không còn phù hợp
+- Chuyển sang phase mới
+
+## Ví Dụ Thực Tế
+
+### Project: E-commerce Website
+
+#### Phiên 1: Setup Project
+```typescript
+- Initialize Next.js
+- Configure TypeScript
+- Setup basic routing
+```
+
+#### Phiên 2: UI Components
+```typescript
+- Header component
+- Product card
+- Shopping cart
+```
+
+#### Phiên 3: State Management
+```typescript
+- Setup Redux
+- Create slices
+- Implement reducers
+```
+
+## Lưu Ý
+1. Luôn backup code trước khi reset phiên
+2. Document các quyết định quan trọng
+3. Maintain clear git history
+
+## Kết Luận
+Việc chia phiên làm việc hợp lý sẽ:
+- Tối ưu hiệu suất
+- Tiết kiệm token
+- Tăng chất lượng code

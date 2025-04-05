@@ -1,95 +1,84 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = []
-  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
 
-// Bảng Users
 model User {
-  id            Int       @id @default(autoincrement()) @map("u_id")
-  lastName      String?   @map("u_LastName") @db.VarChar(50)
-  middleName    String?   @map("u_MiddleName") @db.VarChar(50)
-  firstName     String?   @map("u_FirstName") @db.VarChar(50)
-  type          String?   @map("u_type") @db.VarChar(50)
-  username      String    @map("u_username") @db.VarChar(50)
-  email         String    @map("u_email") @db.VarChar(255)
-  passwordHash  String?   @map("u_password_hash") @db.VarChar(255)
-  status        Int?      @default(1) @map("u_status")
-  createdAt     DateTime? @map("u_created_at")
-  updatedAt     DateTime? @map("u_updated_at")
-  deletedAt     DateTime? @map("u_deleted_at")
-  rolesUsers    RolesUsers[]
+  id           Int          @id @default(autoincrement()) @map("u_id")
+  lastName     String?      @map("u_LastName") @db.VarChar(50)
+  middleName   String?      @map("u_MiddleName") @db.VarChar(50)
+  firstName    String?      @map("u_FirstName") @db.VarChar(50)
+  type         String?      @map("u_type") @db.VarChar(50)
+  username     String       @map("u_username") @db.VarChar(50)
+  email        String       @map("u_email") @db.VarChar(255)
+  passwordHash String?      @map("u_password_hash") @db.VarChar(255)
+  status       Int?         @default(1) @map("u_status")
+  createdAt    DateTime?    @map("u_created_at")
+  updatedAt    DateTime?    @map("u_updated_at")
+  deletedAt    DateTime?    @map("u_deleted_at")
+  rolesUsers   RolesUsers[]
 
   @@map("users")
 }
 
-// Bảng Roles
 model Role {
-  id          Int       @id @default(autoincrement()) @map("r_id")
-  name        String?   @map("r_name") @db.VarChar(128)
-  description String?   @map("r_description") @db.Text
-  status      Int      @default(1) @map("r_status")
-  createdAt   DateTime? @map("r_created_at")
-  updatedAt   DateTime? @map("r_updated_at")
-  deletedAt   DateTime? @map("r_deleted_at")
-  rolesUsers  RolesUsers[]
+  id              Int              @id @default(autoincrement()) @map("r_id")
+  name            String?          @map("r_name") @db.VarChar(128)
+  description     String?          @map("r_description")
+  status          Int              @default(1) @map("r_status")
+  createdAt       DateTime?        @map("r_created_at")
+  updatedAt       DateTime?        @map("r_updated_at")
+  deletedAt       DateTime?        @map("r_deleted_at")
   permissionRoles PermissionRole[]
+  rolesUsers      RolesUsers[]
 
   @@map("roles")
 }
 
-// Bảng RolesUsers
 model RolesUsers {
-  id      Int   @id @default(autoincrement()) @map("ru_id")
-  userId  Int?  @map("user_id")
-  roleId  Int?  @map("role_id")
-  user    User? @relation(fields: [userId], references: [id])
-  role    Role? @relation(fields: [roleId], references: [id])
+  id     Int   @id @default(autoincrement()) @map("ru_id")
+  userId Int?  @map("user_id")
+  roleId Int?  @map("role_id")
+  role   Role? @relation(fields: [roleId], references: [id])
+  user   User? @relation(fields: [userId], references: [id])
 
   @@map("roles_users")
 }
 
-// Bảng Permissions
 model Permission {
-  id            Int       @id @default(autoincrement()) @map("p_id")
-  name          String?   @map("p_name") @db.VarChar(128)
-  displayName   String?   @map("p_display_name") @db.VarChar(128)
-  description   String?   @map("p_description") @db.Text
-  status        Int      @default(1) @map("p_status")
-  createdAt     DateTime? @map("p_created_at")
-  updatedAt     DateTime? @map("p_updated_at")
-  deletedAt     DateTime? @map("p_deleted_at")
+  id              Int              @id @default(autoincrement()) @map("p_id")
+  name            String?          @map("p_name") @db.VarChar(128)
+  displayName     String?          @map("p_display_name") @db.VarChar(128)
+  description     String?          @map("p_description")
+  status          Int              @default(1) @map("p_status")
+  createdAt       DateTime?        @map("p_created_at")
+  updatedAt       DateTime?        @map("p_updated_at")
+  deletedAt       DateTime?        @map("p_deleted_at")
   permissionRoles PermissionRole[]
 
   @@map("permissions")
 }
 
-// Bảng PermissionRoles
 model PermissionRole {
-  id            Int         @id @default(autoincrement()) @map("pr_id")
-  roleId        Int         @map("role_id")
-  permissionId  Int         @map("permission_id")
-  role          Role        @relation(fields: [roleId], references: [id])
-  permission    Permission  @relation(fields: [permissionId], references: [id])
+  id           Int        @id @default(autoincrement()) @map("pr_id")
+  roleId       Int        @map("role_id")
+  permissionId Int        @map("permission_id")
+  permission   Permission @relation(fields: [permissionId], references: [id])
+  role         Role       @relation(fields: [roleId], references: [id])
 
   @@map("permission_roles")
 }
 
-// Bảng Settings
 model Setting {
   id        Int      @id @default(autoincrement())
   class     String   @db.VarChar(255)
   key       String   @db.VarChar(255)
-  value     String?  @db.Text
+  value     String?
   type      String   @default("string") @db.VarChar(31)
   context   String?  @db.VarChar(255)
   createdAt DateTime @map("created_at")
@@ -98,255 +87,234 @@ model Setting {
   @@map("settings")
 }
 
-// Bảng LoaiNguoiDung
 model LoaiNguoiDung {
-  id          Int           @id @default(autoincrement()) @map("loai_nguoi_dung_id")
-  tenLoai     String        @map("ten_loai") @db.VarChar(50)
-  moTa        String?       @map("mo_ta") @db.Text
-  status      Int          @default(1) @map("status")
-  createdAt   DateTime?    @default(now()) @map("created_at")
-  updatedAt   DateTime?    @map("updated_at")
-  deletedAt   DateTime?    @map("deleted_at")
-  nguoiDung   NguoiDung[]
+  id        Int         @id @default(autoincrement()) @map("loai_nguoi_dung_id")
+  tenLoai   String      @map("ten_loai") @db.VarChar(50)
+  moTa      String?     @map("mo_ta")
+  status    Int         @default(1) @map("status")
+  createdAt DateTime?   @default(now()) @map("created_at")
+  updatedAt DateTime?   @map("updated_at")
+  deletedAt DateTime?   @map("deleted_at")
+  nguoiDung NguoiDung[]
 
   @@index([tenLoai])
   @@map("loai_nguoi_dung")
 }
 
-// Bảng PhongKhoa
 model PhongKhoa {
-  id            Int           @id @default(autoincrement()) @map("phong_khoa_id")
-  maPhongKhoa   String        @map("ma_phong_khoa") @db.VarChar(20)
-  tenPhongKhoa  String        @map("ten_phong_khoa") @db.VarChar(100)
-  ghiChu        String?       @map("ghi_chu") @db.Text
-  status        Int          @default(1) @map("status")
-  createdAt     DateTime?    @default(now()) @map("created_at")
-  updatedAt     DateTime?    @map("updated_at")
-  deletedAt     DateTime?    @map("deleted_at")
-  khoaHoc       KhoaHoc[]
-  nganh         Nganh[]
-  nguoiDung     NguoiDung[]
+  id           Int         @id @default(autoincrement()) @map("phong_khoa_id")
+  maPhongKhoa  String      @unique @map("ma_phong_khoa") @db.VarChar(20)
+  tenPhongKhoa String      @map("ten_phong_khoa") @db.VarChar(100)
+  ghiChu       String?     @map("ghi_chu")
+  status       Int         @default(1) @map("status")
+  createdAt    DateTime?   @default(now()) @map("created_at")
+  updatedAt    DateTime?   @map("updated_at")
+  deletedAt    DateTime?   @map("deleted_at")
+  khoaHoc      KhoaHoc[]
+  nganh        Nganh[]
+  nguoiDung    NguoiDung[]
 
-  @@unique([maPhongKhoa])
   @@index([maPhongKhoa])
   @@index([tenPhongKhoa])
   @@map("phong_khoa")
 }
 
-// Bảng NamHoc
 model NamHoc {
-  id            Int           @id @default(autoincrement()) @map("nam_hoc_id")
-  tenNamHoc     String        @map("ten_nam_hoc") @db.VarChar(50)
-  ngayBatDau    DateTime?     @map("ngay_bat_dau") @db.Date
-  ngayKetThuc   DateTime?     @map("ngay_ket_thuc") @db.Date
-  status        Int          @default(1) @map("status")
-  createdAt     DateTime?    @default(now()) @map("created_at")
-  updatedAt     DateTime?    @default(now()) @map("updated_at")
-  deletedAt     DateTime?    @map("deleted_at")
-  nguoiDung     NguoiDung[]
+  id          Int         @id @default(autoincrement()) @map("nam_hoc_id")
+  tenNamHoc   String      @unique @map("ten_nam_hoc") @db.VarChar(50)
+  ngayBatDau  DateTime?   @map("ngay_bat_dau") @db.Date
+  ngayKetThuc DateTime?   @map("ngay_ket_thuc") @db.Date
+  status      Int         @default(1) @map("status")
+  createdAt   DateTime?   @default(now()) @map("created_at")
+  updatedAt   DateTime?   @default(now()) @map("updated_at")
+  deletedAt   DateTime?   @map("deleted_at")
+  nguoiDung   NguoiDung[]
 
-  @@unique([tenNamHoc])
   @@index([tenNamHoc])
   @@map("nam_hoc")
 }
 
-// Bảng BacHoc
 model BacHoc {
-  id          Int           @id @default(autoincrement()) @map("bac_hoc_id")
-  tenBacHoc   String        @map("ten_bac_hoc") @db.VarChar(100)
-  maBacHoc    String?       @map("ma_bac_hoc") @db.VarChar(20)
-  status      Int          @default(1) @map("status")
-  createdAt   DateTime?    @default(now()) @map("created_at")
-  updatedAt   DateTime?    @default(now()) @map("updated_at")
-  deletedAt   DateTime?    @map("deleted_at")
-  nguoiDung   NguoiDung[]
+  id        Int         @id @default(autoincrement()) @map("bac_hoc_id")
+  tenBacHoc String      @unique @map("ten_bac_hoc") @db.VarChar(100)
+  maBacHoc  String?     @map("ma_bac_hoc") @db.VarChar(20)
+  status    Int         @default(1) @map("status")
+  createdAt DateTime?   @default(now()) @map("created_at")
+  updatedAt DateTime?   @default(now()) @map("updated_at")
+  deletedAt DateTime?   @map("deleted_at")
+  nguoiDung NguoiDung[]
 
-  @@unique([tenBacHoc])
   @@index([tenBacHoc])
   @@map("bac_hoc")
 }
 
-// Bảng HeDaoTao
 model HeDaoTao {
-  id            Int           @id @default(autoincrement()) @map("he_dao_tao_id")
-  tenHeDaoTao   String        @map("ten_he_dao_tao") @db.VarChar(100)
-  maHeDaoTao    String?       @map("ma_he_dao_tao") @db.VarChar(20)
-  status        Int          @default(1) @map("status")
-  createdAt     DateTime?    @default(now()) @map("created_at")
-  updatedAt     DateTime?    @default(now()) @map("updated_at")
-  deletedAt     DateTime?    @map("deleted_at")
-  nguoiDung     NguoiDung[]
+  id          Int         @id @default(autoincrement()) @map("he_dao_tao_id")
+  tenHeDaoTao String      @unique @map("ten_he_dao_tao") @db.VarChar(100)
+  maHeDaoTao  String?     @map("ma_he_dao_tao") @db.VarChar(20)
+  status      Int         @default(1) @map("status")
+  createdAt   DateTime?   @default(now()) @map("created_at")
+  updatedAt   DateTime?   @default(now()) @map("updated_at")
+  deletedAt   DateTime?   @map("deleted_at")
+  nguoiDung   NguoiDung[]
 
-  @@unique([tenHeDaoTao])
   @@index([tenHeDaoTao])
   @@map("he_dao_tao")
 }
 
-// Bảng KhoaHoc
 model KhoaHoc {
-  id            Int           @id @default(autoincrement()) @map("khoa_hoc_id")
-  tenKhoaHoc    String        @map("ten_khoa_hoc") @db.VarChar(100)
-  namBatDau     Int?          @map("nam_bat_dau")
-  namKetThuc    Int?          @map("nam_ket_thuc")
-  phongKhoaId   Int?          @map("phong_khoa_id")
-  status        Int          @default(1) @map("status")
-  createdAt     DateTime?    @default(now()) @map("created_at")
-  updatedAt     DateTime?    @default(now()) @map("updated_at")
-  deletedAt     DateTime?    @map("deleted_at")
-  phongKhoa     PhongKhoa?   @relation(fields: [phongKhoaId], references: [id])
+  id          Int        @id @default(autoincrement()) @map("khoa_hoc_id")
+  tenKhoaHoc  String     @map("ten_khoa_hoc") @db.VarChar(100)
+  namBatDau   Int?       @map("nam_bat_dau")
+  namKetThuc  Int?       @map("nam_ket_thuc")
+  phongKhoaId Int?       @map("phong_khoa_id")
+  status      Int        @default(1) @map("status")
+  createdAt   DateTime?  @default(now()) @map("created_at")
+  updatedAt   DateTime?  @default(now()) @map("updated_at")
+  deletedAt   DateTime?  @map("deleted_at")
+  phongKhoa   PhongKhoa? @relation(fields: [phongKhoaId], references: [id])
 
   @@index([tenKhoaHoc])
   @@index([phongKhoaId])
   @@map("khoa_hoc")
 }
 
-// Bảng Nganh
 model Nganh {
-  id            Int           @id @default(autoincrement()) @map("nganh_id")
-  tenNganh      String        @map("ten_nganh") @db.VarChar(200)
-  maNganh       String        @map("ma_nganh") @db.VarChar(20)
-  phongKhoaId   Int?          @map("phong_khoa_id")
-  status        Int          @default(1) @map("status")
-  createdAt     DateTime?    @default(now()) @map("created_at")
-  updatedAt     DateTime?    @default(now()) @map("updated_at")
-  deletedAt     DateTime?    @map("deleted_at")
-  phongKhoa     PhongKhoa?   @relation(fields: [phongKhoaId], references: [id])
-  nguoiDung     NguoiDung[]
+  id          Int         @id @default(autoincrement()) @map("nganh_id")
+  tenNganh    String      @map("ten_nganh") @db.VarChar(200)
+  maNganh     String      @unique @map("ma_nganh") @db.VarChar(20)
+  phongKhoaId Int?        @map("phong_khoa_id")
+  status      Int         @default(1) @map("status")
+  createdAt   DateTime?   @default(now()) @map("created_at")
+  updatedAt   DateTime?   @default(now()) @map("updated_at")
+  deletedAt   DateTime?   @map("deleted_at")
+  phongKhoa   PhongKhoa?  @relation(fields: [phongKhoaId], references: [id])
+  nguoiDung   NguoiDung[]
 
-  @@unique([maNganh])
   @@index([maNganh])
   @@index([tenNganh])
   @@index([phongKhoaId])
   @@map("nganh")
 }
 
-// Bảng Camera
 model Camera {
-  id          Int           @id @default(autoincrement()) @map("camera_id")
-  tenCamera   String        @map("ten_camera") @db.VarChar(255)
-  maCamera    String?       @map("ma_camera") @db.VarChar(20)
-  ipCamera    String?       @map("ip_camera") @db.VarChar(100)
-  port        Int?
-  username    String?       @db.VarChar(50)
-  password    String?       @db.VarChar(50)
-  status      Int          @default(1) @map("status")
-  createdAt   DateTime?    @default(now()) @map("created_at")
-  updatedAt   DateTime?    @default(now()) @map("updated_at")
-  deletedAt   DateTime?    @map("deleted_at")
-  manHinh     ManHinh[]
+  id        Int       @id @default(autoincrement()) @map("camera_id")
+  tenCamera String    @unique @map("ten_camera") @db.VarChar(255)
+  maCamera  String?   @map("ma_camera") @db.VarChar(20)
+  ipCamera  String?   @map("ip_camera") @db.VarChar(100)
+  port      Int?
+  username  String?   @db.VarChar(50)
+  password  String?   @db.VarChar(50)
+  status    Int       @default(1) @map("status")
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @default(now()) @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+  manHinh   ManHinh[]
 
-  @@unique([tenCamera])
   @@index([tenCamera])
   @@map("camera")
 }
 
-// Bảng Template
 model Template {
-  id          Int           @id @default(autoincrement()) @map("template_id")
-  tenTemplate String        @map("ten_template") @db.VarChar(255)
-  maTemplate  String?       @map("ma_template") @db.VarChar(20)
-  status      Int          @default(1) @map("status")
-  createdAt   DateTime?    @default(now()) @map("created_at")
-  updatedAt   DateTime?    @default(now()) @map("updated_at")
-  deletedAt   DateTime?    @map("deleted_at")
+  id          Int       @id @default(autoincrement()) @map("template_id")
+  tenTemplate String    @unique @map("ten_template") @db.VarChar(255)
+  maTemplate  String?   @map("ma_template") @db.VarChar(20)
+  status      Int       @default(1) @map("status")
+  createdAt   DateTime? @default(now()) @map("created_at")
+  updatedAt   DateTime? @default(now()) @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
   manHinh     ManHinh[]
 
-  @@unique([tenTemplate])
   @@index([tenTemplate])
   @@map("template")
 }
 
-// Bảng ManHinh
 model ManHinh {
-  id          Int           @id @default(autoincrement()) @map("man_hinh_id")
-  tenManHinh  String        @map("ten_man_hinh") @db.VarChar(255)
-  maManHinh   String?       @map("ma_man_hinh") @db.VarChar(20)
-  cameraId    Int?          @map("camera_id")
-  templateId  Int?          @map("template_id")
-  status      Int          @default(1) @map("status")
-  createdAt   DateTime?    @default(now()) @map("created_at")
-  updatedAt   DateTime?    @default(now()) @map("updated_at")
-  deletedAt   DateTime?    @map("deleted_at")
-  camera      Camera?      @relation(fields: [cameraId], references: [id])
-  template    Template?    @relation(fields: [templateId], references: [id])
+  id         Int       @id @default(autoincrement()) @map("man_hinh_id")
+  tenManHinh String    @unique @map("ten_man_hinh") @db.VarChar(255)
+  maManHinh  String?   @map("ma_man_hinh") @db.VarChar(20)
+  cameraId   Int?      @map("camera_id")
+  templateId Int?      @map("template_id")
+  status     Int       @default(1) @map("status")
+  createdAt  DateTime? @default(now()) @map("created_at")
+  updatedAt  DateTime? @default(now()) @map("updated_at")
+  deletedAt  DateTime? @map("deleted_at")
+  camera     Camera?   @relation(fields: [cameraId], references: [id])
+  template   Template? @relation(fields: [templateId], references: [id])
 
-  @@unique([tenManHinh])
   @@index([tenManHinh])
   @@index([cameraId])
   @@index([templateId])
   @@map("man_hinh")
 }
 
-// Bảng LoaiSuKien
 model LoaiSuKien {
-  id              Int           @id @default(autoincrement()) @map("loai_su_kien_id")
-  tenLoaiSuKien   String        @map("ten_loai_su_kien") @db.VarChar(100)
-  maLoaiSuKien    String?       @map("ma_loai_su_kien") @db.VarChar(20)
-  status          Int          @default(1) @map("status")
-  createdAt       DateTime?    @default(now()) @map("created_at")
-  updatedAt       DateTime?    @map("updated_at")
-  deletedAt       DateTime?    @map("deleted_at")
-  suKien          SuKien[]
+  id            Int       @id @default(autoincrement()) @map("loai_su_kien_id")
+  tenLoaiSuKien String    @unique @map("ten_loai_su_kien") @db.VarChar(100)
+  maLoaiSuKien  String?   @map("ma_loai_su_kien") @db.VarChar(20)
+  status        Int       @default(1) @map("status")
+  createdAt     DateTime? @default(now()) @map("created_at")
+  updatedAt     DateTime? @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at")
+  suKien        SuKien[]
 
-  @@unique([tenLoaiSuKien])
   @@index([tenLoaiSuKien])
   @@map("loai_su_kien")
 }
 
-// Bảng SuKien
 model SuKien {
-  id                      Int           @id @default(autoincrement()) @map("su_kien_id")
-  tenSuKien              String        @map("ten_su_kien") @db.VarChar(255)
-  suKienPoster           Json?         @map("su_kien_poster")
-  moTa                   String?       @map("mo_ta") @db.Text
-  moTaSuKien             String?       @map("mo_ta_su_kien") @db.Text
-  chiTietSuKien          String?       @map("chi_tiet_su_kien") @db.Text
-  thoiGianBatDau         DateTime      @map("thoi_gian_bat_dau")
-  thoiGianKetThuc        DateTime      @map("thoi_gian_ket_thuc")
-  thoiGianCheckinBatDau  DateTime?     @map("thoi_gian_checkin_bat_dau")
-  thoiGianCheckinKetThuc DateTime?     @map("thoi_gian_checkin_ket_thuc")
-  donViToChuc            String?       @map("don_vi_to_chuc") @db.VarChar(255)
-  donViPhoiHop           String?       @map("don_vi_phoi_hop") @db.Text
-  doiTuongThamGia        String?       @map("doi_tuong_tham_gia") @db.Text
-  diaDiem                String?       @db.VarChar(255)
-  diaChiCuThe            String?       @map("dia_chi_cu_the") @db.VarChar(255)
-  toaDoGPS               String?       @map("toa_do_gps") @db.VarChar(100)
-  loaiSuKienId           Int          @map("loai_su_kien_id")
-  maQRCode               String?       @map("ma_qr_code") @db.VarChar(100)
-  status                 Int          @default(1) @map("status")
-  tongDangKy             Int          @default(0) @map("tong_dang_ky")
-  tongCheckIn            Int          @default(0) @map("tong_check_in")
-  tongCheckOut           Int          @default(0) @map("tong_check_out")
-  choPhepCheckIn         Boolean      @default(true) @map("cho_phep_check_in")
-  choPhepCheckOut        Boolean      @default(true) @map("cho_phep_check_out")
-  yeuCauFaceId          Boolean      @default(false) @map("yeu_cau_face_id")
-  choPhepCheckinThuCong  Boolean      @default(true) @map("cho_phep_checkin_thu_cong")
-  batDauDangKy          DateTime?     @map("bat_dau_dang_ky")
-  ketThucDangKy         DateTime?     @map("ket_thuc_dang_ky")
-  hanHuyDangKy          DateTime?     @map("han_huy_dang_ky")
-  gioBatDau             DateTime?     @map("gio_bat_dau")
-  gioKetThuc            DateTime?     @map("gio_ket_thuc")
-  soLuongThamGia        Int          @default(0) @map("so_luong_tham_gia")
-  soLuongDienGia        Int          @default(0) @map("so_luong_dien_gia")
-  gioiHanLoaiNguoiDung  String?       @map("gioi_han_loai_nguoi_dung") @db.VarChar(255)
-  tuKhoaSuKien          String?       @map("tu_khoa_su_kien") @db.VarChar(255)
-  hashtag               String?       @db.VarChar(255)
-  slug                  String?       @db.VarChar(255)
-  soLuotXem             Int          @default(0) @map("so_luot_xem")
-  lichTrinh             Json?         @map("lich_trinh")
-  hinhThuc              HinhThucSuKien @default(offline) @map("hinh_thuc")
-  linkOnline            String?       @map("link_online") @db.VarChar(255)
-  matKhauOnline         String?       @map("mat_khau_online") @db.VarChar(100)
-  version               Int          @default(1)
-  createdAt             DateTime?    @default(now()) @map("created_at")
-  updatedAt             DateTime?    @default(now()) @map("updated_at")
-  deletedAt             DateTime?    @default(now()) @map("deleted_at")
-  loaiSuKien            LoaiSuKien   @relation(fields: [loaiSuKienId], references: [id])
-  suKienDienGia         SuKienDienGia[]
-  formDangKy            FormDangKySuKien[]
-  checkinSuKien         CheckinSuKien[]
-  checkoutSuKien        CheckoutSuKien[]
-  dangKySuKien          DangKySuKien[]
+  id                     Int                @id @default(autoincrement()) @map("su_kien_id")
+  tenSuKien              String             @map("ten_su_kien") @db.VarChar(255)
+  suKienPoster           Json?              @map("su_kien_poster")
+  moTa                   String?            @map("mo_ta")
+  moTaSuKien             String?            @map("mo_ta_su_kien")
+  chiTietSuKien          String?            @map("chi_tiet_su_kien")
+  thoiGianBatDau         DateTime           @map("thoi_gian_bat_dau")
+  thoiGianKetThuc        DateTime           @map("thoi_gian_ket_thuc")
+  thoiGianCheckinBatDau  DateTime?          @map("thoi_gian_checkin_bat_dau")
+  thoiGianCheckinKetThuc DateTime?          @map("thoi_gian_checkin_ket_thuc")
+  donViToChuc            String?            @map("don_vi_to_chuc") @db.VarChar(255)
+  donViPhoiHop           String?            @map("don_vi_phoi_hop")
+  doiTuongThamGia        String?            @map("doi_tuong_tham_gia")
+  diaDiem                String?            @db.VarChar(255)
+  diaChiCuThe            String?            @map("dia_chi_cu_the") @db.VarChar(255)
+  toaDoGPS               String?            @map("toa_do_gps") @db.VarChar(100)
+  loaiSuKienId           Int                @map("loai_su_kien_id")
+  maQRCode               String?            @map("ma_qr_code") @db.VarChar(100)
+  status                 Int                @default(1) @map("status")
+  tongDangKy             Int                @default(0) @map("tong_dang_ky")
+  tongCheckIn            Int                @default(0) @map("tong_check_in")
+  tongCheckOut           Int                @default(0) @map("tong_check_out")
+  choPhepCheckIn         Boolean            @default(true) @map("cho_phep_check_in")
+  choPhepCheckOut        Boolean            @default(true) @map("cho_phep_check_out")
+  yeuCauFaceId           Boolean            @default(false) @map("yeu_cau_face_id")
+  choPhepCheckinThuCong  Boolean            @default(true) @map("cho_phep_checkin_thu_cong")
+  batDauDangKy           DateTime?          @map("bat_dau_dang_ky")
+  ketThucDangKy          DateTime?          @map("ket_thuc_dang_ky")
+  hanHuyDangKy           DateTime?          @map("han_huy_dang_ky")
+  gioBatDau              DateTime?          @map("gio_bat_dau")
+  gioKetThuc             DateTime?          @map("gio_ket_thuc")
+  soLuongThamGia         Int                @default(0) @map("so_luong_tham_gia")
+  soLuongDienGia         Int                @default(0) @map("so_luong_dien_gia")
+  gioiHanLoaiNguoiDung   String?            @map("gioi_han_loai_nguoi_dung") @db.VarChar(255)
+  tuKhoaSuKien           String?            @map("tu_khoa_su_kien") @db.VarChar(255)
+  hashtag                String?            @db.VarChar(255)
+  slug                   String?            @db.VarChar(255)
+  soLuotXem              Int                @default(0) @map("so_luot_xem")
+  lichTrinh              Json?              @map("lich_trinh")
+  hinhThuc               HinhThucSuKien     @default(offline) @map("hinh_thuc")
+  linkOnline             String?            @map("link_online") @db.VarChar(255)
+  matKhauOnline          String?            @map("mat_khau_online") @db.VarChar(100)
+  version                Int                @default(1)
+  createdAt              DateTime?          @default(now()) @map("created_at")
+  updatedAt              DateTime?          @default(now()) @map("updated_at")
+  deletedAt              DateTime?          @default(now()) @map("deleted_at")
+  checkinSuKien          CheckinSuKien[]
+  checkoutSuKien         CheckoutSuKien[]
+  dangKySuKien           DangKySuKien[]
+  formDangKy             FormDangKySuKien[]
+  loaiSuKien             LoaiSuKien         @relation(fields: [loaiSuKienId], references: [id])
+  suKienDienGia          SuKienDienGia[]
 
   @@index([tenSuKien])
   @@index([thoiGianBatDau])
@@ -360,32 +328,25 @@ model SuKien {
   @@map("su_kien")
 }
 
-enum HinhThucSuKien {
-  offline
-  online
-  hybrid
-}
-
-// Bảng DienGia
 model DienGia {
-  id                  Int           @id @default(autoincrement()) @map("dien_gia_id")
-  tenDienGia          String        @map("ten_dien_gia") @db.VarChar(255)
-  chucDanh            String?       @map("chuc_danh") @db.VarChar(255)
-  toChuc              String?       @map("to_chuc") @db.VarChar(255)
-  gioiThieu           String?       @map("gioi_thieu") @db.Text
-  avatar              String?       @db.VarChar(255)
-  email               String?       @db.VarChar(100)
-  dienThoai           String?       @map("dien_thoai") @db.VarChar(20)
-  website             String?       @db.VarChar(255)
-  chuyenMon           String?       @map("chuyen_mon") @db.Text
-  thanhTuu            String?       @map("thanh_tuu") @db.Text
-  mangXaHoi           Json?         @map("mang_xa_hoi")
-  status              Int          @default(1) @map("status")
-  soSuKienThamGia     Int          @default(0) @map("so_su_kien_tham_gia")
-  createdAt           DateTime?    @default(now()) @map("created_at")
-  updatedAt           DateTime?    @default(now()) @map("updated_at")
-  deletedAt           DateTime?    @default(now()) @map("deleted_at")
-  suKienDienGia       SuKienDienGia[]
+  id              Int             @id @default(autoincrement()) @map("dien_gia_id")
+  tenDienGia      String          @map("ten_dien_gia") @db.VarChar(255)
+  chucDanh        String?         @map("chuc_danh") @db.VarChar(255)
+  toChuc          String?         @map("to_chuc") @db.VarChar(255)
+  gioiThieu       String?         @map("gioi_thieu")
+  avatar          String?         @db.VarChar(255)
+  email           String?         @db.VarChar(100)
+  dienThoai       String?         @map("dien_thoai") @db.VarChar(20)
+  website         String?         @db.VarChar(255)
+  chuyenMon       String?         @map("chuyen_mon")
+  thanhTuu        String?         @map("thanh_tuu")
+  mangXaHoi       Json?           @map("mang_xa_hoi")
+  status          Int             @default(1) @map("status")
+  soSuKienThamGia Int             @default(0) @map("so_su_kien_tham_gia")
+  createdAt       DateTime?       @default(now()) @map("created_at")
+  updatedAt       DateTime?       @default(now()) @map("updated_at")
+  deletedAt       DateTime?       @default(now()) @map("deleted_at")
+  suKienDienGia   SuKienDienGia[]
 
   @@index([tenDienGia])
   @@index([toChuc])
@@ -393,27 +354,26 @@ model DienGia {
   @@map("dien_gia")
 }
 
-// Bảng SuKienDienGia
 model SuKienDienGia {
-  id                  Int           @id @default(autoincrement()) @map("su_kien_dien_gia_id")
-  suKienId            Int          @map("su_kien_id")
-  dienGiaId           Int          @map("dien_gia_id")
-  thuTu               Int          @default(0) @map("thu_tu")
-  vaiTro              String?       @map("vai_tro") @db.VarChar(100)
-  moTa                String?       @map("mo_ta") @db.Text
-  thoiGianTrinhBay    DateTime?     @map("thoi_gian_trinh_bay")
-  thoiGianKetThuc     DateTime?     @map("thoi_gian_ket_thuc")
-  thoiLuongPhut       Int?          @map("thoi_luong_phut")
-  tieuDeTrinhBay      String?       @map("tieu_de_trinh_bay") @db.VarChar(255)
-  taiLieuDinhKem      Json?         @map("tai_lieu_dinh_kem")
-  trangThaiThamGia    TrangThaiThamGia @default(cho_xac_nhan) @map("trang_thai_tham_gia")
-  hienThiCongKhai     Boolean      @default(true) @map("hien_thi_cong_khai")
-  ghiChu              String?       @map("ghi_chu") @db.Text
-  createdAt           DateTime?    @default(now()) @map("created_at")
-  updatedAt           DateTime?    @default(now()) @map("updated_at")
-  deletedAt           DateTime?    @default(now()) @map("deleted_at")
-  suKien              SuKien       @relation(fields: [suKienId], references: [id])
-  dienGia             DienGia      @relation(fields: [dienGiaId], references: [id])
+  id               Int              @id @default(autoincrement()) @map("su_kien_dien_gia_id")
+  suKienId         Int              @map("su_kien_id")
+  dienGiaId        Int              @map("dien_gia_id")
+  thuTu            Int              @default(0) @map("thu_tu")
+  vaiTro           String?          @map("vai_tro") @db.VarChar(100)
+  moTa             String?          @map("mo_ta")
+  thoiGianTrinhBay DateTime?        @map("thoi_gian_trinh_bay")
+  thoiGianKetThuc  DateTime?        @map("thoi_gian_ket_thuc")
+  thoiLuongPhut    Int?             @map("thoi_luong_phut")
+  tieuDeTrinhBay   String?          @map("tieu_de_trinh_bay") @db.VarChar(255)
+  taiLieuDinhKem   Json?            @map("tai_lieu_dinh_kem")
+  trangThaiThamGia TrangThaiThamGia @default(cho_xac_nhan) @map("trang_thai_tham_gia")
+  hienThiCongKhai  Boolean          @default(true) @map("hien_thi_cong_khai")
+  ghiChu           String?          @map("ghi_chu")
+  createdAt        DateTime?        @default(now()) @map("created_at")
+  updatedAt        DateTime?        @default(now()) @map("updated_at")
+  deletedAt        DateTime?        @default(now()) @map("deleted_at")
+  dienGia          DienGia          @relation(fields: [dienGiaId], references: [id])
+  suKien           SuKien           @relation(fields: [suKienId], references: [id])
 
   @@unique([suKienId, dienGiaId])
   @@index([suKienId])
@@ -422,69 +382,58 @@ model SuKienDienGia {
   @@map("su_kien_dien_gia")
 }
 
-enum TrangThaiThamGia {
-  xac_nhan
-  cho_xac_nhan
-  tu_choi
-  khong_lien_he_duoc
-}
-
-// Bảng FormDangKySuKien
 model FormDangKySuKien {
-  id                  Int           @id @default(autoincrement()) @map("form_id")
-  tenForm             String        @map("ten_form") @db.VarChar(255)
-  moTa                String?       @map("mo_ta") @db.Text
-  suKienId            Int          @map("su_kien_id")
-  cauTrucForm         Json         @map("cau_truc_form")
-  hienThiCongKhai     Boolean      @default(true) @map("hien_thi_cong_khai")
-  batBuocDien         Boolean      @default(false) @map("bat_buoc_dien")
-  soLanSuDung         Int          @default(0) @map("so_lan_su_dung")
-  status              Int          @default(1) @map("status")
-  createdAt           DateTime?    @default(now()) @map("created_at")
-  updatedAt           DateTime?    @map("updated_at")
-  deletedAt           DateTime?    @map("deleted_at")
-  suKien              SuKien       @relation(fields: [suKienId], references: [id])
+  id              Int       @id @default(autoincrement()) @map("form_id")
+  tenForm         String    @map("ten_form") @db.VarChar(255)
+  moTa            String?   @map("mo_ta")
+  suKienId        Int       @map("su_kien_id")
+  cauTrucForm     Json      @map("cau_truc_form")
+  hienThiCongKhai Boolean   @default(true) @map("hien_thi_cong_khai")
+  batBuocDien     Boolean   @default(false) @map("bat_buoc_dien")
+  soLanSuDung     Int       @default(0) @map("so_lan_su_dung")
+  status          Int       @default(1) @map("status")
+  createdAt       DateTime? @default(now()) @map("created_at")
+  updatedAt       DateTime? @map("updated_at")
+  deletedAt       DateTime? @map("deleted_at")
+  suKien          SuKien    @relation(fields: [suKienId], references: [id])
 
   @@index([tenForm])
   @@index([suKienId])
   @@map("form_dang_ky_su_kien")
 }
 
-// Bảng NguoiDung
 model NguoiDung {
-  nguoiDungId         Int           @id @default(autoincrement()) @map("nguoi_dung_id")
-  accountId           String?       @map("AccountId") @db.VarChar(50)
-  uId                 Int?          @map("u_id")
-  firstName           String?       @map("FirstName") @db.VarChar(100)
-  accountType         String?       @map("AccountType") @db.VarChar(20)
-  fullName            String?       @map("FullName") @db.VarChar(100)
-  mobilePhone         String?       @map("MobilePhone") @db.VarChar(20)
-  email               String?       @map("Email") @db.VarChar(100)
-  homePhone1          String?       @map("HomePhone1") @db.VarChar(20)
-  pw                  String?       @map("PW") @db.VarChar(255)
-  homePhone           String?       @map("HomePhone") @db.VarChar(20)
-  loaiNguoiDungId     Int?          @map("loai_nguoi_dung_id")
-  matKhauLocal        String?       @map("mat_khau_local") @db.VarChar(255)
-  namHocId            Int?          @map("nam_hoc_id")
-  bacHocId            Int?          @map("bac_hoc_id")
-  heDaoTaoId          Int?          @map("he_dao_tao_id")
-  nganhId             Int?          @map("nganh_id")
-  phongKhoaId         Int?          @map("phong_khoa_id")
-  status              Int          @default(1) @map("status")
-  lastLogin           DateTime?     @map("last_login")
-  createdAt           DateTime?    @default(now()) @map("created_at")
-  updatedAt           DateTime?    @map("updated_at")
-  deletedAt           DateTime?    @map("deleted_at")
-  loaiNguoiDung       LoaiNguoiDung? @relation(fields: [loaiNguoiDungId], references: [id])
-  namHoc              NamHoc?       @relation(fields: [namHocId], references: [id])
-  bacHoc              BacHoc?       @relation(fields: [bacHocId], references: [id])
-  heDaoTao            HeDaoTao?     @relation(fields: [heDaoTaoId], references: [id])
-  nganh               Nganh?        @relation(fields: [nganhId], references: [id])
-  phongKhoa           PhongKhoa?    @relation(fields: [phongKhoaId], references: [id])
-  faceNguoiDung       FaceNguoiDung[]
+  nguoiDungId     Int             @id @default(autoincrement()) @map("nguoi_dung_id")
+  accountId       String?         @unique @map("AccountId") @db.VarChar(50)
+  uId             Int?            @map("u_id")
+  firstName       String?         @map("FirstName") @db.VarChar(100)
+  accountType     String?         @map("AccountType") @db.VarChar(20)
+  fullName        String?         @map("FullName") @db.VarChar(100)
+  mobilePhone     String?         @map("MobilePhone") @db.VarChar(20)
+  email           String?         @unique @map("Email") @db.VarChar(100)
+  homePhone1      String?         @map("HomePhone1") @db.VarChar(20)
+  pw              String?         @map("PW") @db.VarChar(255)
+  homePhone       String?         @map("HomePhone") @db.VarChar(20)
+  loaiNguoiDungId Int?            @map("loai_nguoi_dung_id")
+  matKhauLocal    String?         @map("mat_khau_local") @db.VarChar(255)
+  namHocId        Int?            @map("nam_hoc_id")
+  bacHocId        Int?            @map("bac_hoc_id")
+  heDaoTaoId      Int?            @map("he_dao_tao_id")
+  nganhId         Int?            @map("nganh_id")
+  phongKhoaId     Int?            @map("phong_khoa_id")
+  status          Int             @default(1) @map("status")
+  lastLogin       DateTime?       @map("last_login")
+  createdAt       DateTime?       @default(now()) @map("created_at")
+  updatedAt       DateTime?       @map("updated_at")
+  deletedAt       DateTime?       @map("deleted_at")
+  faceNguoiDung   FaceNguoiDung[]
+  bacHoc          BacHoc?         @relation(fields: [bacHocId], references: [id])
+  heDaoTao        HeDaoTao?       @relation(fields: [heDaoTaoId], references: [id])
+  loaiNguoiDung   LoaiNguoiDung?  @relation(fields: [loaiNguoiDungId], references: [id])
+  namHoc          NamHoc?         @relation(fields: [namHocId], references: [id])
+  nganh           Nganh?          @relation(fields: [nganhId], references: [id])
+  phongKhoa       PhongKhoa?      @relation(fields: [phongKhoaId], references: [id])
 
-  @@unique([accountId])
-  @@unique([email])
   @@index([accountId])
   @@index([fullName])
   @@index([email])
@@ -497,47 +446,45 @@ model NguoiDung {
   @@map("nguoi_dung")
 }
 
-// Bảng FaceNguoiDung
 model FaceNguoiDung {
-  id                  Int           @id @default(autoincrement()) @map("face_nguoi_dung_id")
-  nguoiDungId         Int          @map("nguoi_dung_id")
-  duongDanAnh         String        @map("duong_dan_anh") @db.VarChar(255)
-  status              Int          @default(1) @map("status")
-  createdAt           DateTime?    @default(now()) @map("created_at")
-  updatedAt           DateTime?    @map("updated_at")
-  deletedAt           DateTime?    @map("deleted_at")
-  nguoiDung           NguoiDung    @relation(fields: [nguoiDungId], references: [nguoiDungId])
+  id          Int       @id @default(autoincrement()) @map("face_nguoi_dung_id")
+  nguoiDungId Int       @map("nguoi_dung_id")
+  duongDanAnh String    @map("duong_dan_anh") @db.VarChar(255)
+  status      Int       @default(1) @map("status")
+  createdAt   DateTime? @default(now()) @map("created_at")
+  updatedAt   DateTime? @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+  nguoiDung   NguoiDung @relation(fields: [nguoiDungId], references: [nguoiDungId])
 
   @@index([nguoiDungId])
   @@map("face_nguoi_dung")
 }
 
-// Bảng CheckinSuKien
 model CheckinSuKien {
-  id                  Int           @id @default(autoincrement()) @map("checkin_sukien_id")
-  suKienId            Int          @map("su_kien_id")
-  email               String        @db.VarChar(100)
-  hoTen               String        @map("ho_ten") @db.VarChar(255)
-  dangKySuKienId      Int?          @map("dangky_sukien_id")
-  thoiGianCheckIn     DateTime      @default(now()) @map("thoi_gian_check_in")
-  checkinType         CheckinType   @map("checkin_type")
-  faceImagePath       String?       @map("face_image_path") @db.VarChar(255)
-  faceMatchScore      Float?        @map("face_match_score")
-  faceVerified        Boolean      @default(false) @map("face_verified")
-  maXacNhan           String?       @map("ma_xac_nhan") @db.VarChar(20)
-  status              Int          @default(1) @map("status")
-  locationData        String?       @map("location_data") @db.VarChar(255)
-  deviceInfo          String?       @map("device_info") @db.VarChar(255)
-  hinhThucThamGia     HinhThucThamGia @default(offline) @map("hinh_thuc_tham_gia")
-  ipAddress           String?       @map("ip_address") @db.VarChar(45)
-  thongTinBoSung      Json?         @map("thong_tin_bo_sung")
-  ghiChu              String?       @map("ghi_chu") @db.Text
-  createdAt           DateTime?    @default(now()) @map("created_at")
-  updatedAt           DateTime?    @map("updated_at")
-  deletedAt           DateTime?    @map("deleted_at")
-  suKien              SuKien       @relation(fields: [suKienId], references: [id])
-  checkoutSuKien      CheckoutSuKien[]
-  dangKySuKien        DangKySuKien[]
+  id              Int              @id @default(autoincrement()) @map("checkin_sukien_id")
+  suKienId        Int              @map("su_kien_id")
+  email           String           @db.VarChar(100)
+  hoTen           String           @map("ho_ten") @db.VarChar(255)
+  dangKySuKienId  Int?             @map("dangky_sukien_id")
+  thoiGianCheckIn DateTime         @default(now()) @map("thoi_gian_check_in")
+  checkinType     CheckinType      @map("checkin_type")
+  faceImagePath   String?          @map("face_image_path") @db.VarChar(255)
+  faceMatchScore  Float?           @map("face_match_score")
+  faceVerified    Boolean          @default(false) @map("face_verified")
+  maXacNhan       String?          @map("ma_xac_nhan") @db.VarChar(20)
+  status          Int              @default(1) @map("status")
+  locationData    String?          @map("location_data") @db.VarChar(255)
+  deviceInfo      String?          @map("device_info") @db.VarChar(255)
+  hinhThucThamGia HinhThucThamGia  @default(offline) @map("hinh_thuc_tham_gia")
+  ipAddress       String?          @map("ip_address") @db.VarChar(45)
+  thongTinBoSung  Json?            @map("thong_tin_bo_sung")
+  ghiChu          String?          @map("ghi_chu")
+  createdAt       DateTime?        @default(now()) @map("created_at")
+  updatedAt       DateTime?        @map("updated_at")
+  deletedAt       DateTime?        @map("deleted_at")
+  suKien          SuKien           @relation(fields: [suKienId], references: [id])
+  checkoutSuKien  CheckoutSuKien[]
+  dangKySuKien    DangKySuKien[]
 
   @@index([suKienId])
   @@index([email])
@@ -545,6 +492,107 @@ model CheckinSuKien {
   @@index([checkinType])
   @@index([hinhThucThamGia])
   @@map("checkin_sukien")
+}
+
+model CheckoutSuKien {
+  id                        Int             @id @default(autoincrement()) @map("checkout_sukien_id")
+  suKienId                  Int             @map("su_kien_id")
+  email                     String          @db.VarChar(100)
+  hoTen                     String          @map("ho_ten") @db.VarChar(255)
+  dangKySuKienId            Int?            @map("dangky_sukien_id")
+  checkinSuKienId           Int?            @map("checkin_sukien_id")
+  thoiGianCheckOut          DateTime        @default(now()) @map("thoi_gian_check_out")
+  checkoutType              CheckoutType    @map("checkout_type")
+  faceImagePath             String?         @map("face_image_path") @db.VarChar(255)
+  faceMatchScore            Float?          @map("face_match_score")
+  faceVerified              Boolean         @default(false) @map("face_verified")
+  maXacNhan                 String?         @map("ma_xac_nhan") @db.VarChar(20)
+  status                    Int             @default(1) @map("status")
+  locationData              String?         @map("location_data") @db.VarChar(255)
+  deviceInfo                String?         @map("device_info") @db.VarChar(255)
+  attendanceDurationMinutes Int?            @map("attendance_duration_minutes")
+  hinhThucThamGia           HinhThucThamGia @default(offline) @map("hinh_thuc_tham_gia")
+  ipAddress                 String?         @map("ip_address") @db.VarChar(45)
+  thongTinBoSung            Json?           @map("thong_tin_bo_sung")
+  ghiChu                    String?         @map("ghi_chu")
+  feedback                  String?
+  danhGia                   Int?            @map("danh_gia")
+  noiDungDanhGia            String?         @map("noi_dung_danh_gia")
+  createdAt                 DateTime?       @default(now()) @map("created_at")
+  updatedAt                 DateTime?       @map("updated_at")
+  deletedAt                 DateTime?       @map("deleted_at")
+  checkinSuKien             CheckinSuKien?  @relation(fields: [checkinSuKienId], references: [id])
+  suKien                    SuKien          @relation(fields: [suKienId], references: [id])
+  dangKySuKien              DangKySuKien[]
+
+  @@index([suKienId])
+  @@index([email])
+  @@index([checkinSuKienId])
+  @@index([thoiGianCheckOut])
+  @@index([checkoutType])
+  @@index([hinhThucThamGia])
+  @@map("checkout_sukien")
+}
+
+model DangKySuKien {
+  id                Int              @id @default(autoincrement()) @map("dangky_sukien_id")
+  suKienId          Int              @map("su_kien_id")
+  email             String           @db.VarChar(100)
+  hoTen             String           @map("ho_ten") @db.VarChar(255)
+  dienThoai         String?          @map("dien_thoai") @db.VarChar(20)
+  loaiNguoiDangKy   LoaiNguoiDangKy  @default(khach) @map("loai_nguoi_dang_ky")
+  ngayDangKy        DateTime?        @default(now()) @map("ngay_dang_ky")
+  maXacNhan         String?          @map("ma_xac_nhan") @db.VarChar(20)
+  status            Int              @default(0) @map("status")
+  noiDungGopY       String?          @map("noi_dung_gop_y")
+  nguonGioiThieu    String?          @map("nguon_gioi_thieu") @db.VarChar(255)
+  donViToChuc       String?          @map("don_vi_to_chuc") @db.VarChar(255)
+  faceImagePath     String?          @map("face_image_path") @db.VarChar(255)
+  faceVerified      Boolean          @default(false) @map("face_verified")
+  daCheckIn         Boolean          @default(false) @map("da_check_in")
+  daCheckOut        Boolean          @default(false) @map("da_check_out")
+  checkinSuKienId   Int?             @map("checkin_sukien_id")
+  checkoutSuKienId  Int?             @map("checkout_sukien_id")
+  thoiGianDuyet     DateTime?        @map("thoi_gian_duyet")
+  thoiGianHuy       DateTime?        @map("thoi_gian_huy")
+  lyDoHuy           String?          @map("ly_do_huy")
+  hinhThucThamGia   HinhThucDangKy   @default(offline) @map("hinh_thuc_tham_gia")
+  attendanceStatus  AttendanceStatus @default(not_attended) @map("attendance_status")
+  attendanceMinutes Int              @default(0) @map("attendance_minutes")
+  diemDanhBang      DiemDanhBang     @default(none) @map("diem_danh_bang")
+  thongTinDangKy    Json?            @map("thong_tin_dang_ky")
+  lyDoThamDu        String?          @map("ly_do_tham_du")
+  createdAt         DateTime?        @default(now()) @map("created_at")
+  updatedAt         DateTime?        @map("updated_at")
+  deletedAt         DateTime?        @map("deleted_at")
+  checkinSuKien     CheckinSuKien?   @relation(fields: [checkinSuKienId], references: [id])
+  checkoutSuKien    CheckoutSuKien?  @relation(fields: [checkoutSuKienId], references: [id])
+  suKien            SuKien           @relation(fields: [suKienId], references: [id])
+
+  @@unique([suKienId, email])
+  @@index([suKienId])
+  @@index([email])
+  @@index([hoTen])
+  @@index([status])
+  @@index([daCheckIn])
+  @@index([daCheckOut])
+  @@index([hinhThucThamGia])
+  @@index([checkinSuKienId])
+  @@index([checkoutSuKienId])
+  @@map("dangky_sukien")
+}
+
+enum HinhThucSuKien {
+  offline
+  online
+  hybrid
+}
+
+enum TrangThaiThamGia {
+  xac_nhan
+  cho_xac_nhan
+  tu_choi
+  khong_lien_he_duoc
 }
 
 enum CheckinType {
@@ -559,102 +607,12 @@ enum HinhThucThamGia {
   online
 }
 
-// Bảng CheckoutSuKien
-model CheckoutSuKien {
-  id                  Int           @id @default(autoincrement()) @map("checkout_sukien_id")
-  suKienId            Int          @map("su_kien_id")
-  email               String        @db.VarChar(100)
-  hoTen               String        @map("ho_ten") @db.VarChar(255)
-  dangKySuKienId      Int?          @map("dangky_sukien_id")
-  checkinSuKienId     Int?          @map("checkin_sukien_id")
-  thoiGianCheckOut    DateTime      @default(now()) @map("thoi_gian_check_out")
-  checkoutType        CheckoutType  @map("checkout_type")
-  faceImagePath       String?       @map("face_image_path") @db.VarChar(255)
-  faceMatchScore      Float?        @map("face_match_score")
-  faceVerified        Boolean      @default(false) @map("face_verified")
-  maXacNhan           String?       @map("ma_xac_nhan") @db.VarChar(20)
-  status              Int          @default(1) @map("status")
-  locationData        String?       @map("location_data") @db.VarChar(255)
-  deviceInfo          String?       @map("device_info") @db.VarChar(255)
-  attendanceDurationMinutes Int?    @map("attendance_duration_minutes")
-  hinhThucThamGia     HinhThucThamGia @default(offline) @map("hinh_thuc_tham_gia")
-  ipAddress           String?       @map("ip_address") @db.VarChar(45)
-  thongTinBoSung      Json?         @map("thong_tin_bo_sung")
-  ghiChu              String?       @map("ghi_chu") @db.Text
-  feedback            String?       @db.Text
-  danhGia             Int?          @map("danh_gia")
-  noiDungDanhGia      String?       @map("noi_dung_danh_gia") @db.Text
-  createdAt           DateTime?    @default(now()) @map("created_at")
-  updatedAt           DateTime?    @map("updated_at")
-  deletedAt           DateTime?    @map("deleted_at")
-  suKien              SuKien       @relation(fields: [suKienId], references: [id])
-  checkinSuKien       CheckinSuKien? @relation(fields: [checkinSuKienId], references: [id])
-  dangKySuKien        DangKySuKien[]
-
-  @@index([suKienId])
-  @@index([email])
-  @@index([checkinSuKienId])
-  @@index([thoiGianCheckOut])
-  @@index([checkoutType])
-  @@index([hinhThucThamGia])
-  @@map("checkout_sukien")
-}
-
 enum CheckoutType {
   face_id
   manual
   qr_code
   auto
   online
-}
-
-// Bảng DangKySuKien
-model DangKySuKien {
-  id                  Int           @id @default(autoincrement()) @map("dangky_sukien_id")
-  suKienId            Int          @map("su_kien_id")
-  email               String        @db.VarChar(100)
-  hoTen               String        @map("ho_ten") @db.VarChar(255)
-  dienThoai           String?       @map("dien_thoai") @db.VarChar(20)
-  loaiNguoiDangKy     LoaiNguoiDangKy @default(khach) @map("loai_nguoi_dang_ky")
-  ngayDangKy          DateTime?     @default(now()) @map("ngay_dang_ky")
-  maXacNhan           String?       @map("ma_xac_nhan") @db.VarChar(20)
-  status              Int          @default(0) @map("status")
-  noiDungGopY         String?       @map("noi_dung_gop_y") @db.Text
-  nguonGioiThieu      String?       @map("nguon_gioi_thieu") @db.VarChar(255)
-  donViToChuc         String?       @map("don_vi_to_chuc") @db.VarChar(255)
-  faceImagePath       String?       @map("face_image_path") @db.VarChar(255)
-  faceVerified        Boolean      @default(false) @map("face_verified")
-  daCheckIn           Boolean      @default(false) @map("da_check_in")
-  daCheckOut          Boolean      @default(false) @map("da_check_out")
-  checkinSuKienId     Int?          @map("checkin_sukien_id")
-  checkoutSuKienId    Int?          @map("checkout_sukien_id")
-  thoiGianDuyet       DateTime?     @map("thoi_gian_duyet")
-  thoiGianHuy         DateTime?     @map("thoi_gian_huy")
-  lyDoHuy             String?       @map("ly_do_huy") @db.Text
-  hinhThucThamGia     HinhThucDangKy @default(offline) @map("hinh_thuc_tham_gia")
-  attendanceStatus    AttendanceStatus @default(not_attended) @map("attendance_status")
-  attendanceMinutes   Int          @default(0) @map("attendance_minutes")
-  diemDanhBang        DiemDanhBang @default(none) @map("diem_danh_bang")
-  thongTinDangKy      Json?         @map("thong_tin_dang_ky")
-  lyDoThamDu          String?       @map("ly_do_tham_du") @db.Text
-  createdAt           DateTime?    @default(now()) @map("created_at")
-  updatedAt           DateTime?    @map("updated_at")
-  deletedAt           DateTime?    @map("deleted_at")
-  suKien              SuKien       @relation(fields: [suKienId], references: [id])
-  checkinSuKien       CheckinSuKien? @relation(fields: [checkinSuKienId], references: [id])
-  checkoutSuKien      CheckoutSuKien? @relation(fields: [checkoutSuKienId], references: [id])
-
-  @@unique([suKienId, email])
-  @@index([suKienId])
-  @@index([email])
-  @@index([hoTen])
-  @@index([status])
-  @@index([daCheckIn])
-  @@index([daCheckOut])
-  @@index([hinhThucThamGia])
-  @@index([checkinSuKienId])
-  @@index([checkoutSuKienId])
-  @@map("dangky_sukien")
 }
 
 enum LoaiNguoiDangKy {
@@ -680,4 +638,4 @@ enum DiemDanhBang {
   face_id
   manual
   none
-} 
+}
