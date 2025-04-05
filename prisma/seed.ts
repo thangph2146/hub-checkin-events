@@ -12,7 +12,7 @@ async function main() {
     }
   })
 
-  const userRole = await prisma.role.create({
+  const _userRole = await prisma.role.create({
     data: {
       name: 'User',
       description: 'Người dùng thông thường',
