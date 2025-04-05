@@ -1,0 +1,47 @@
+{
+  "typescript": {
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true
+  },
+  "editor": {
+    "formatOnSave": true,
+    "defaultFormatter": "typescript",
+    "tabSize": 2,
+    "rulers": [80, 100],
+    "wordWrap": "off",
+    "bracketPairColorization": true,
+    "guides": {
+      "bracketPairs": true,
+      "indentation": true
+    }
+  },
+  "diagnostics": {
+    "typeChecking": {
+      "strict": true,
+      "noImplicitAny": true
+    },
+    "unusedCode": {
+      "variables": true,
+      "parameters": true,
+      "imports": true
+    }
+  },
+  "suggestions": {
+    "addMissingImports": true,
+    "addMissingTypes": true,
+    "strictNullChecks": true
+  }
+} 
