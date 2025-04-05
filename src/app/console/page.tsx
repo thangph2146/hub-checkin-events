@@ -9,7 +9,7 @@ const isNonEmptyString = (value: string | null | undefined): boolean => {
   return typeof value === 'string' && value.length > 0
 }
 
-function TableList() {
+function TableList(): JSX.Element {
   const { tables, refreshTables } = useTables()
 
   return (
@@ -69,7 +69,7 @@ function TableList() {
   )
 }
 
-function LoadingFallback() {
+function LoadingFallback(): JSX.Element {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
@@ -77,7 +77,7 @@ function LoadingFallback() {
   )
 }
 
-function ErrorFallback({ error }: { error: Error }) {
+function ErrorFallback({ error }: { error: Error }): JSX.Element {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div className="bg-red-50 p-4 rounded-md">
@@ -101,7 +101,7 @@ function ErrorFallback({ error }: { error: Error }) {
   )
 }
 
-export default function Console() {
+export default function Console(): JSX.Element {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <Suspense fallback={<LoadingFallback />}>

@@ -1,7 +1,7 @@
 import { startMcpServer } from '@/lib/mcp/server';
 import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
   try {
     await startMcpServer();
     return NextResponse.json({ message: 'MCP Server started successfully' });

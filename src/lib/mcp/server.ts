@@ -88,17 +88,17 @@ mcpServer.resource(
 );
 
 // Helper functions
-async function getAllTables() {
+async function getAllTables(): Promise<unknown[]> {
   // Implement using your TablesService
   return [];
 }
 
-async function getDatabaseStatus() {
+async function getDatabaseStatus(): Promise<{ status: string }> {
   // Implement database status check
   return { status: 'healthy' };
 }
 
-async function exportSchema() {
+async function exportSchema(): Promise<Record<string, unknown>> {
   // Implement schema export logic
   return {};
 }
@@ -109,7 +109,7 @@ const validateString = (value: string | null | undefined): string => {
 }
 
 // Trong các hàm, thay thế || bằng ??
-const getTableDetails = async (tableName: string) => {
+const getTableDetails = async (tableName: string): Promise<unknown> => {
   const table = await prisma.$queryRaw`
     SELECT * FROM information_schema.columns 
     WHERE table_name = ${validateString(tableName)};
@@ -117,7 +117,7 @@ const getTableDetails = async (tableName: string) => {
   return table
 }
 
-const getSchemaInFormat = async (format: string) => {
+const getSchemaInFormat = async (format: string): Promise<unknown> => {
   const schema = await prisma.$queryRaw`
     SELECT * FROM information_schema.tables 
     WHERE table_schema = ${validateString(format)};
@@ -126,7 +126,7 @@ const getSchemaInFormat = async (format: string) => {
 }
 
 // Khởi động server với StdioServerTransport
-export async function startMcpServer() {
+export async function startMcpServer(): Promise<void> {
   const transport = new StdioServerTransport();
   await mcpServer.connect(transport);
   console.warn('MCP Server started');

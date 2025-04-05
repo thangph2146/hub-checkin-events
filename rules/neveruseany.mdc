@@ -1,6 +1,48 @@
----
-description: 
-globs: 
-alwaysApply: true
----
- 
+# Never Use Any Rule
+
+This rule enforces strict typing and prohibits the use of `any` type in TypeScript code.
+
+## Rules
+
+1. Never use the `any` type explicitly
+2. Never use implicit `any`
+3. Always define proper interfaces and types
+4. Use `unknown` instead of `any` when type is truly unknown
+5. Use type assertions with caution
+
+## Files Affected
+
+- All `.ts` and `.tsx` files
+- Especially in:
+  - `src/types/`
+  - `src/services/`
+  - `src/hooks/`
+  - `src/lib/`
+
+## Examples
+
+❌ Bad:
+```typescript
+function process(data: any) {
+  return data.value;
+}
+
+const handler = (event: any) => {
+  console.log(event);
+}
+```
+
+✅ Good:
+```typescript
+interface Data {
+  value: string;
+}
+
+function process(data: Data) {
+  return data.value;
+}
+
+const handler = (event: MouseEvent) => {
+  console.log(event);
+}
+``` 

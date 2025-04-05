@@ -17,7 +17,7 @@ export interface Table {
 }
 
 export const TablesService = {
-  async getAllTables() {
+  async getAllTables(): Promise<Table[]> {
     const { data } = await axiosInstance.get<Table[]>(API_ENDPOINTS.TABLES.GET_ALL)
     return data
   },

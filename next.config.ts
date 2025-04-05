@@ -1,7 +1,8 @@
-import type { NextConfig } from "next";
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  eslint: {
+    dirs: ['pages', 'components', 'lib', 'utils', 'hooks']
+  }
+}
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
-
-export default nextConfig;
+module.exports = nextConfig 
