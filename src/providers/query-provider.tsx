@@ -17,7 +17,7 @@ const queryClient = new QueryClient({
   }
 })
 
-export default function QueryProvider({ children }: { children: ReactNode }) {
+export default function QueryProvider({ children }: { children: ReactNode }): JSX.Element {
   return (
     <QueryClientProvider client={queryClient}>
       {children}

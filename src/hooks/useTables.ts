@@ -1,9 +1,9 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, UseQueryResult } from '@tanstack/react-query'
 import { TablesService, Table } from '@/services/tables.service'
 
 export const TABLES_QUERY_KEY = ['tables']
 
-export function useTables() {
+export function useTables(): UseQueryResult<Table[]> {
   return useQuery<Table[]>({
     queryKey: TABLES_QUERY_KEY,
     queryFn: async () => {

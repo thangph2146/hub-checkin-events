@@ -1,7 +1,7 @@
 import { useTables } from '@/hooks/useTables'
 import { Table, Column } from '@/services/tables.service'
 
-export default function TableList() {
+export default function TableList(): JSX.Element {
   const { data: tables = [], isLoading, isError, error } = useTables()
 
   console.log('TableList render:', { tables, isLoading, isError, error })

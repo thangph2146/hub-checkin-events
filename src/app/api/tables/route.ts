@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
   try {
     console.log('Processing GET /api/tables request')
 

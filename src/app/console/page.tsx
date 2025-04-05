@@ -6,8 +6,7 @@ import TableList from './components/TableList'
 import LoadingFallback from './components/LoadingFallback'
 import ErrorFallback from './components/ErrorFallback'
 
-
-export default function Console() {
+export default function Console(): JSX.Element {
   return (
     <div className="container mx-auto p-4">
       <ErrorBoundary FallbackComponent={ErrorFallback}>
